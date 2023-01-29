@@ -9,7 +9,7 @@ async fn hello_world() -> &'static str {
 
 #[shuttle_service::main]
 async fn axum(#[shuttle_static_folder::StaticFolder(folder = "public")] static_folder: PathBuf) -> shuttle_service::ShuttleAxum {
-    let router = Router::new().route("/hello", get(hello_world))
+    let router = Router::new().route("/api/hello", get(hello_world))
       .merge(SpaRouter::new("/public", static_folder).index_file("index.html"))
       ;
 

@@ -1,0 +1,6 @@
+[workspace]
+resolver = "2"
+members = [
+  "base64totext-backend",
+  "base64totext-frontend",
+]

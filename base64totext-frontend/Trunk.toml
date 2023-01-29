@@ -1,0 +1,6 @@
+[build]
+target = "index.html"
+dist = "../base64totext-backend/public"
+
+[[proxy]]
+backend = "http://[::1]:8080/api/"
