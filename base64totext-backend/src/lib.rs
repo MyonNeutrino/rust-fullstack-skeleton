@@ -1,20 +1,36 @@
-use axum::{routing::get, Router, body::{Body, boxed}, response::Response};
 use axum::http::StatusCode;
-use tokio::fs;
+use axum::{
+    body::{boxed, Body},
+    response::Response,
+    routing::get,
+    Router,
+};
 use std::path::PathBuf;
 use sync_wrapper::SyncWrapper;
-use tower_http::services::ServeDir;
+use tokio::fs;
 use tower::util::ServiceExt;
+use tower_http::services::ServeDir;
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 
+#[utoipa::path(get, path="/api/hello", responses((status=200, description="receiving a hello message", body=String)))]
 async fn hello_world() -> &'static str {
     "Hello, world!"
 }
+
+#[derive(OpenApi)]
+#[openapi(paths(
+hello_world
+),
+tags((name="base64totoxt", description="Test project for rust backend")))]
+struct ApiDoc;
 
 #[shuttle_service::main]
 async fn axum(
     #[shuttle_static_folder::StaticFolder(folder = "public")] static_folder: PathBuf,
 ) -> shuttle_service::ShuttleAxum {
     let router = Router::new()
+        .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
         .route("/api/hello", get(hello_world))
         .fallback_service(get(|req| async move {
             match ServeDir::new(&static_folder).oneshot(req).await {
