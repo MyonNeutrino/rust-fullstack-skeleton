@@ -1,3 +1,6 @@
+pub mod home;
+pub mod login;
+
 use gloo_net::http::Request;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
@@ -9,11 +12,14 @@ enum Route {
     Home,
     #[at("/hello-server")]
     HelloServer,
+    #[at("/login")]
+    Login,
 }
 
 fn switch(routes: Route) -> Html {
     match routes {
-        Route::Home => html! { <h1>{ "Hello Frontend" }</h1> },
+        Route::Home => html! { <><home::Home/></>},
+        Route::Login => html! { <><login::Login/></> },
         Route::HelloServer => html! { <HelloServer /> },
     }
 }
